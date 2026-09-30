@@ -71,6 +71,7 @@ async function refreshAmount() {
   const currency = $('currency').value;
   renderSummary(currency);
   const { amount } = await postJSON('/quote', { items: cart, currency });
+  if (!elements) return;
   // Atualiza os métodos disponíveis conforme a nova moeda (ex.: Pix/boleto só em BRL, iDEAL só em EUR…)
   elements.update({ amount, currency });
 }
@@ -103,11 +104,17 @@ async function createIntentAndConfirm() {
 async function init() {
   const config = await fetch('/config').then((r) => r.json());
   products = config.products;
-  stripe = Stripe(config.publishableKey);
 
   const currency = $('currency').value;
-  const { amount } = await postJSON('/quote', { items: cart, currency });
   renderSummary(currency);
+  $('currency').addEventListener('change', () => refreshAmount().catch((e) => showMessage(e.message)));
+
+  // js.stripe.com pode ser bloqueado por extensões (ad blockers) ou pela rede.
+  if (typeof Stripe === 'undefined') {
+    throw new Error('Não foi possível carregar o sistema de pagamento. Desative bloqueadores de anúncio e recarregue a página.');
+  }
+  stripe = Stripe(config.publishableKey);
+  const { amount } = await postJSON('/quote', { items: cart, currency });
 
   // Fluxo "deferred intent": o Payment Element é montado antes de existir o PaymentIntent,
   // o que permite trocar moeda/valor livremente.
@@ -138,8 +145,6 @@ async function init() {
       showMessage(err.message);
     }
   });
-
-  $('currency').addEventListener('change', () => refreshAmount().catch((e) => showMessage(e.message)));
 
   $('payment-form').addEventListener('submit', async (e) => {
     e.preventDefault();
