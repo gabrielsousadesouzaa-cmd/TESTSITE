@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout</title>
+  <link rel="stylesheet" href="/style.css" />
+  <script src="https://js.stripe.com/clover/stripe.js"></script>
+</head>
+<body>
+  <main class="checkout">
+    <section class="summary">
+      <h1>Seu pedido</h1>
+
+      <label class="field">
+        <span>Moeda</span>
+        <select id="currency">
+          <option value="brl">BRL — Real</option>
+          <option value="usd">USD — Dólar</option>
+          <option value="eur">EUR — Euro</option>
+          <option value="gbp">GBP — Libra</option>
+          <option value="jpy">JPY — Iene</option>
+          <option value="mxn">MXN — Peso mexicano</option>
+          <option value="cad">CAD — Dólar canadense</option>
+          <option value="aud">AUD — Dólar australiano</option>
+        </select>
+      </label>
+
+      <ul id="items" class="items"></ul>
+
+      <div class="total">
+        <span>Total</span>
+        <strong id="total">—</strong>
+      </div>
+    </section>
+
+    <section class="payment">
+      <div id="express-checkout"></div>
+      <p class="divider"><span>ou pague com</span></p>
+
+      <form id="payment-form">
+        <label class="field">
+          <span>Nome</span>
+          <input id="name" required autocomplete="name" />
+        </label>
+        <label class="field">
+          <span>E-mail</span>
+          <input id="email" type="email" required autocomplete="email" />
+        </label>
+
+        <div id="payment-element"></div>
+
+        <button id="submit" type="submit" disabled>
+          <span id="button-text">Pagar</span>
+        </button>
+        <div id="message" role="alert"></div>
+      </form>
+    </section>
+  </main>
+
+  <script src="/checkout.js"></script>
+</body>
+</html>

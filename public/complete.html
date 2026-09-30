@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Status do pagamento</title>
+  <link rel="stylesheet" href="/style.css" />
+  <script src="https://js.stripe.com/clover/stripe.js"></script>
+</head>
+<body>
+  <main class="checkout single">
+    <section class="payment">
+      <h1 id="title">Verificando pagamento…</h1>
+      <p id="detail"></p>
+      <a href="/">Voltar à loja</a>
+    </section>
+  </main>
+
+  <script>
+    (async () => {
+      const { publishableKey } = await fetch('/config').then((r) => r.json());
+      const stripe = Stripe(publishableKey);
+      const clientSecret = new URLSearchParams(location.search).get('payment_intent_client_secret');
+      if (!clientSecret) return;
+
+      const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+      const messages = {
+        succeeded: ['Pagamento aprovado! 🎉', 'Obrigado pela compra.'],
+        processing: ['Pagamento em processamento', 'Avisaremos por e-mail quando for confirmado (ex.: boleto, transferência).'],
+        requires_action: ['Aguardando pagamento', 'Finalize o pagamento (ex.: Pix, boleto, OXXO) usando as instruções exibidas.'],
+        requires_payment_method: ['Pagamento não concluído', 'Tente novamente com outra forma de pagamento.'],
+      };
+      const [title, detail] = messages[paymentIntent.status] || ['Algo deu errado', ''];
+      document.getElementById('title').textContent = title;
+      document.getElementById('detail').textContent = detail;
+    })();
+  </script>
+</body>
+</html>

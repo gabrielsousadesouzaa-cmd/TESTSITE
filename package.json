@@ -1,0 +1,20 @@
+{
+  "name": "stripe-custom-checkout",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Checkout personalizado com Stripe Payment Element (multimoeda e todos os métodos de pagamento)",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "stripe": "^22.6.2"
+  }
+}
